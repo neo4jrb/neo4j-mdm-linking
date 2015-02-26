@@ -1,0 +1,50 @@
+table.table style="width: 100%"
+  tr
+    th colspan="2" GitHub
+    th Relationship
+    th colspan="2" StackOverflow
+  - @data.each do |github_user, rels, stackoverflow_user|
+    tr
+      td
+        img src="#{github_user.props[:avatar_url]}" style="width: 100px"
+      td
+        dl.dl-horizontal
+          dt ID
+          dd = github_user.props[:id]
+          dt Login
+          dd = link_to github_user.props[:login], github_user.props[:html_url]
+          dt Name
+          dd = github_user.props[:name]
+          dt Location
+          dd = github_user.props[:location]
+          dt Blog
+          dd = link_to github_user.props[:blog], github_user.props[:blog]
+          dt Company
+          dd = github_user.props[:company]
+      td
+        - rels.each do |rel|
+          = rel.rel_type
+          dl.dl-horizontal
+            - rel.props.each do |var, val|
+              dt = var
+              dd = val
+      td
+        dl.dl-horizontal
+          dt User ID
+          dd = stackoverflow_user.props[:user_id]
+          dt &nbsp;
+          dd &nbsp;
+
+          dt Display Name
+          dd = link_to stackoverflow_user.props[:display_name], stackoverflow_user.props[:link]
+          dt Location
+          dd = stackoverflow_user.props[:location]
+          dt Website URL
+          dd = link_to stackoverflow_user.props[:website_url], stackoverflow_user.props[:website_url]
+          dt Reputation
+          dd = stackoverflow_user.props[:reputation]
+          dt Age
+          dd = stackoverflow_user.props[:age]
+      td
+        img src="#{stackoverflow_user.props[:profile_image]}" style="width: 100px"
+  

@@ -1,0 +1,102 @@
+table.table.table-bordered.choices style="width: 100%"
+  tr
+    - {'Definitely not' => -2, 'Probably not' => -1, "Don't know" => 0, 'Probably' => 1, 'Definitely' => 2}.each do |label, index|
+      td = link_to label, {action: :identify, index: index, user1: @github_user.neo_id, user2: @stackoverflow_user.neo_id}, class: 'btn'
+
+table.table.table-bordered style="width: 100%"
+  td
+    img src="#{@github_user.props[:avatar_url]}" style="width: 100px"
+  td
+    dl#github-user.dl-horizontal data-props="#{@github_user.props.to_json}"
+      dt ID
+      dd = @github_user.props[:id]
+      dt Login
+      dd = link_to @github_user.props[:login], @github_user.props[:html_url]
+      dt Name
+      dd = @github_user.props[:name]
+      dt Location
+      dd = @github_user.props[:location]
+      dt Blog
+      dd = link_to @github_user.props[:blog], httpize(@github_user.props[:blog])
+      dt E-Mail
+      dd = @github_user.props[:email]
+      dt Company
+      dd = @github_user.props[:company]
+      dt Created At
+      dd = @github_user.props[:created_at]
+      dt Updated At
+      dd = @github_user.props[:updated_at]
+
+    h3 Repos
+    ul
+      - @github_repos.sort.uniq.each do |github_repo|
+        li = link_to github_repo.gsub(/(neo4j)/i, '<strong>\1</strong>').html_safe, "http://github.com/#{github_repo}"
+
+    h3 Languages
+    ul.list-group
+      - @github_languages.sort_by(&:last).reverse.each do |language, byte_count|
+        li.list-group-item
+          span.badge = byte_count
+          = language
+  td
+    dl#stackoverflow-user.dl-horizontal data-props="#{@stackoverflow_user.props.to_json}"
+      dt User ID
+      dd = @stackoverflow_user.props[:user_id]
+      dt Display Name
+      dd = link_to @stackoverflow_user.props[:display_name], @stackoverflow_user.props[:link]
+
+      dt &nbsp;
+      dd &nbsp;
+
+      dt Location
+      dd = @stackoverflow_user.props[:location]
+      dt Website URL
+      dd = link_to @stackoverflow_user.props[:website_url], httpize(@stackoverflow_user.props[:website_url])
+      dt Reputation
+      dd = @stackoverflow_user.props[:reputation]
+      dt Age
+      dd = @stackoverflow_user.props[:age]
+      dt About Me
+      dd = sanitize @stackoverflow_user.props[:about_me], tags: %w(table tr td strong b em i a)
+
+    h3 Tags
+    dl.dl-horizontal
+      - @stackoverflow_tags.sort_by(&:last).reverse.each do |tag_text, count|
+        dt = tag_text
+        dd = count
+
+  td
+    img src="#{@stackoverflow_user.props[:profile_image]}" style="width: 100px"
+
+coffee:
+  set_active = (index) ->
+    $('.choices a.active').removeClass('active')
+    $($('.choices a')[2 + index]).addClass('active')
+
+
+  index = 0
+  set_active(index)
+
+  document.onkeydown = (e) ->
+      e = e || window.event
+
+      console.log({'e.keyCode': e.keyCode})
+      switch e.keyCode
+        when 37 # left arrow
+          index = index - 1
+        when 39 # right arrow
+          index = index + 1
+        when 79 # 'o'
+          urls = [
+            $('#github-user').data('props').blog,
+            $('#github-user').data('props').html_url,
+            $('#stackoverflow-user').data('props').website_url
+            $('#stackoverflow-user').data('props').link
+          ]
+          for url in urls
+            window.open(url, '_blank') if url?.replace(/\s+/g, '').length
+        when 13
+          window.location = $('.choices a.active').attr('href')
+
+      set_active(index)
+
