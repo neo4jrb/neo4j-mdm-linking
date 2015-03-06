@@ -35,8 +35,10 @@ gem 'phashion'
 gem 'parallel'
 gem 'fuzzy-string-match'
 
-gem 'neo4j', path: '/Users/brian/github/neo4jrb/neo4j'
-gem 'neo4j-core', path: '/Users/brian/github/neo4jrb/neo4j-core', branch: 'various'
+gem 'neo4j', path: '/Users/brian/github/neo4jrb/neo4j', branch: 'various'
+gem 'neo4j-core', path: '/Users/brian/github/neo4jrb/neo4j-core'
+
+gem 'statsample'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
