@@ -1,24 +1,25 @@
 PATH
   remote: /Users/brian/github/neo4jrb/neo4j
   specs:
-    neo4j (4.1.2)
+    neo4j (5.0.0)
       active_attr (~> 0.8)
       activemodel (~> 4)
       activesupport (~> 4)
-      neo4j-core (~> 4.0.0)
+      neo4j-core (>= 4.1.0)
       orm_adapter (~> 0.5.0)
-      railties (~> 4)
 
 PATH
   remote: /Users/brian/github/neo4jrb/neo4j-core
   specs:
-    neo4j-core (4.0.3)
+    neo4j-core (4.1.0)
       activesupport
       faraday (~> 0.9.0)
       faraday_middleware (~> 0.9.1)
+      faraday_middleware-multi_json
       httparty
       httpclient
       json
+      multi_json
       net-http-persistent
       os
       zip
@@ -98,6 +99,9 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.9.1)
       faraday (>= 0.7.4, < 0.10)
+    faraday_middleware-multi_json (0.0.6)
+      faraday_middleware
+      multi_json
     fastercsv (1.5.5)
     fuzzy-string-match (0.9.7)
       RubyInline (>= 3.8.6)
@@ -212,7 +216,6 @@ GEM
     slop (3.6.0)
     spreadsheet (0.9.9)
       ruby-ole (>= 1.0)
-    spring (1.3.2)
     sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -278,7 +281,6 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   slim-rails
-  spring
   sqlite3
   statsample
   turbolinks

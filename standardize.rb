@@ -12,10 +12,10 @@ end
 
 def uris_from_string(string)
   uri_strings = URI.extract(string, ['http', 'https'])
-  uri_strings += string.scan(/\b[^\/\.\s]+\.[^\.\s]+\b/) # No protocol
+  uri_strings += string.scan(/\b[a-z0-9\-\_\~]+(?:\.[a-z0-9\-\_\~]+)+\b/i) # No protocol
 
-  uri_strings -= uri_strings.map do |uri_string|
-    uri_string.gsub(/^https?:\/\//, '')
+  uri_strings = uri_strings.uniq do |uri_string|
+    uri_string.gsub(/^https?:\/\//i, '')
   end
 
   uri_strings.uniq.map do |uri_string|
@@ -44,7 +44,9 @@ StackOverflowUser.all.each do |user|
   user.domains = user.uris.map { |u| u.match(/^([^\/]+\/\/)?([^\/]+)/)[2] }
   user.domains += user.emails.map { |e| e.split('@')[1] }
   user.domains = user.domains.map { |d| d.gsub(/^www\./, '') }
+
   user.domains = user.domains.uniq.compact.map(&:downcase)
+  user.uncommon_domains = user.domains.uniq.compact.map(&:downcase)
 
   user.usernames = user.emails.map { |e| e.split('@')[0] }
   user.usernames << user.display_name
@@ -68,25 +70,26 @@ GitHubUser.all.each do |user|
 
   user.domains = user.uris.map { |u| u.match(/^([^\/]+\/\/)?([^\/]+)/)[2] }
   user.domains = user.domains.map { |d| d.gsub(/^www\./, '') }
+
   user.domains = user.domains.uniq.map(&:downcase)
+  user.uncommon_domains = user.domains.uniq.map(&:downcase)
 
   user.save
 
   putc 'g'
 end
 
-
-COMMON_DOMAINS = query.match(u: :User).unwind(domain: 'u.domains').with(:domain, count: 'count(domain)').where('count > 1').pluck(:domain)
+COMMON_DOMAINS = query.match(u: :User).unwind(domain: 'u.domains').with(:domain, count: 'count(domain)').where('count > 2').pluck(:domain)
 puts 'COMMON_DOMAINS', COMMON_DOMAINS.inspect
 
 StackOverflowUser.all.each do |user|
-  user.domains -= COMMON_DOMAINS
+  user.uncommon_domains -= COMMON_DOMAINS
   user.save
   putc 's'
 end
 
 GitHubUser.all.each do |user|
-  user.domains -= COMMON_DOMAINS
+  user.uncommon_domains -= COMMON_DOMAINS
   user.save
   putc 'g'
 end

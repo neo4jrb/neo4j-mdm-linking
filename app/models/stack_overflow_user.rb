@@ -22,11 +22,18 @@ class StackOverflowUser < StackOverflow
   property :emails
 
   property :domains
+  property :uncommon_domains
   property :usernames
   
   has_many :both, :identified_as, type: :IDENTIFIED, model_class: false
 
   has_many :both, :computer_identified_as, type: :COMPUTER_IDENTIFIED, model_class: false
+
+  has_many :both, :computer_identified_property_as, type: :COMPUTER_IDENTIFIED_PROPERTY, model_class: false
+
+  def user_site_url
+    self.link
+  end
 end
 
 
